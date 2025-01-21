@@ -2,7 +2,6 @@ import boto3
 import botocore.config
 import json
 from datetime import datetime
-from urllib3 import response
 
 def generate_blog(topic:str)-> str:
     prompt=f"""<s>[INST]User:Write a 200 words blog on the topic {topic}
@@ -20,7 +19,7 @@ def generate_blog(topic:str)-> str:
         bedrock=boto3.client("bedrock-runtime",region_name="us-east-2",
                              config=botocore.config.Config(read_timeout=300,retries={'max_attempts':3})
                              )
-        bedrock.invoke_model(body=json.dumps(body),modelId="meta.llama3-3-70b-instruct-v1:0")
+        response = bedrock.invoke_model(body=json.dumps(body),modelId="meta.llama3-3-70b-instruct-v1:0")
         
         response_content=response.get('body').read()
         response_data=json.loads(response_content)
